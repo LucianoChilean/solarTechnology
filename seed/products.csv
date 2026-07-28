@@ -1,0 +1,25 @@
+sku,name,category,price,short_description
+k6,Kit Solar 6kW On-Grid Básico,Kits Solares,3300000,Inversor Huawei 6kW + 5 paneles 500Wp. Instalación incluida.
+k3,Kit Solar 3kW On-Grid,Kits Solares,1850000,Ideal para consumos pequeños. 3 paneles + inversor.
+k8,Kit Solar 8kW On-Grid Plus,Kits Solares,4290000,Mayor potencia para hogares con alto consumo.
+kh5,Kit Solar Híbrido 5kW,Kits Solares,5650000,Con respaldo de batería para cortes de luz.
+ko3,Kit Solar Off-Grid 3kW,Kits Solares,3950000,Autonomía total para zonas sin red eléctrica.
+k10,Kit Solar 10kW Empresas,Kits Solares,6890000,Solución comercial trifásica de alto rendimiento.
+inv6,Inversor Huawei 6kW On-Grid,Inversores,980000,Inversor string monofásico con monitoreo WiFi.
+invh5,Inversor Híbrido 5kW,Inversores,1290000,Compatible con baterías de litio. Backup automático.
+invg3,Inversor Growatt 3kW,Inversores,620000,Económico y confiable para sistemas pequeños.
+micro,Microinversor 800W,Inversores,185000,Optimización por panel. Ideal para sombras parciales.
+p500,Panel Monocristalino 500Wp,Paneles,95000,"Alta eficiencia, células PERC, garantía 12 años."
+p450,Panel Monocristalino 450Wp,Paneles,82000,Excelente relación precio-rendimiento.
+pbi,Panel Bifacial 550Wp,Paneles,119000,Captura luz por ambas caras. Máxima generación.
+b5,Batería Litio 5kWh,Baterías,1450000,Almacenamiento LiFePO4 con 6000 ciclos.
+pm,Power Module Huawei LUNA,Baterías,1890000,Módulo de potencia con optimizador de energía.
+b10,Batería Litio 10kWh,Baterías,2750000,Mayor autonomía para respaldo prolongado.
+est,Estructura Coplanar (5 paneles),Estructura,145000,Aluminio anodizado para techo de teja o zinc.
+riel,Riel de Aluminio 4.2m,Estructura,18500,Perfil estructural reforzado para montaje.
+gan,Set Ganchos para Teja,Estructura,24000,Fijación segura sin filtraciones. Pack x10.
+tdc,Tablero Protección DC,Protecciones,89000,Protección contra sobretensiones lado continua.
+tac,Tablero Protección AC,Protecciones,76000,Diferencial + termomagnético certificado.
+dif,Interruptor Diferencial 2P,Protecciones,28000,Protección de personas contra fugas de corriente.
+mc4,Conector MC4 (par),Conectores y Cables,3500,Conector fotovoltaico IP67 macho + hembra.
+cab,Cable Solar 6mm² (rollo 50m),Conectores y Cables,65000,Cable doble aislación resistente a UV.

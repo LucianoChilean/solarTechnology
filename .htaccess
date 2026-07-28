@@ -1,0 +1,59 @@
+# ==========================================================================
+# SolarTechonolgy — reglas de seguridad Apache (README §Seguridad)
+# Montado en la raíz de WP (/var/www/html/.htaccess)
+# ==========================================================================
+
+# --- Cabeceras de seguridad -----------------------------------------------
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  Header always set X-XSS-Protection "1; mode=block"
+  # HSTS: descomenta SOLO cuando sirvas bajo HTTPS/TLS
+  # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+  Header unset X-Powered-By
+  Header always unset X-Powered-By
+</IfModule>
+
+# --- Sin listado de directorios -------------------------------------------
+Options -Indexes
+
+# --- Bloquear archivos sensibles ------------------------------------------
+<FilesMatch "^(wp-config\.php|readme\.html|license\.txt|xmlrpc\.php)$">
+  Require all denied
+</FilesMatch>
+
+# .env, .sql, dotfiles, backups
+<FilesMatch "(^\.|\.(env|sql|sql\.gz|bak|old|swp|dist|ini|log)$)">
+  Require all denied
+</FilesMatch>
+
+# Bloquear xmlrpc.php (vector de fuerza bruta / pingback)
+<Files xmlrpc.php>
+  Require all denied
+</Files>
+
+# --- Proteger wp-config.php explícitamente --------------------------------
+<Files wp-config.php>
+  Require all denied
+</Files>
+
+# --- PHP NO se ejecuta en uploads (principal vector de shells) ------------
+# (path-aware y seguro en contexto .htaccess; defensa extra en
+#  wp-content/uploads/.htaccess si tu hosting lo permite)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^wp-content/uploads/.*\.(php|phtml|php3|php4|php5|php7|php8|pht|phar)$ - [F,L,NC]
+</IfModule>
+
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+# END WordPress

@@ -1,0 +1,109 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: st_db
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - st_net
+
+  wordpress:
+    image: wordpress:php8.3-apache
+    container_name: st_wp
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_TABLE_PREFIX: ${DB_PREFIX}
+      # Endurecimiento vía wp-config (README §Seguridad)
+      WORDPRESS_CONFIG_EXTRA: |
+        define('DISALLOW_FILE_EDIT', true);
+        define('DISALLOW_UNFILTERED_HTML', true);
+        define('WP_POST_REVISIONS', 5);
+        define('AUTOMATIC_UPDATER_DISABLED', false);
+        define('WP_AUTO_UPDATE_CORE', 'minor');
+        define('EMPTY_TRASH_DAYS', 7);
+        # Descomenta al servir bajo HTTPS/TLS:
+        # define('FORCE_SSL_ADMIN', true);
+        # Máxima dureza tras el setup (bloquea instalar/actualizar plugins):
+        # define('DISALLOW_FILE_MODS', true);
+    volumes:
+      - wp_core:/var/www/html
+      - ./wp-content/themes/solartechonolgy:/var/www/html/wp-content/themes/solartechonolgy
+      - ./wp-content/mu-plugins:/var/www/html/wp-content/mu-plugins
+      - ./.htaccess:/var/www/html/.htaccess
+      - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+    networks:
+      - st_net
+
+  wpcli:
+    image: wordpress:cli-php8.3
+    container_name: st_wpcli
+    depends_on:
+      - db
+      - wordpress
+    user: "33:33"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_TABLE_PREFIX: ${DB_PREFIX}
+      # Variables usadas por seed/setup.sh
+      SITE_URL: ${SITE_URL}
+      SITE_TITLE: ${SITE_TITLE}
+      ADMIN_USER: ${ADMIN_USER}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      LOGIN_SLUG: ${LOGIN_SLUG}
+      WP_LOCALE: ${WP_LOCALE:-es_CL}
+      WHATSAPP_NUMBER: ${WHATSAPP_NUMBER}
+      CONTACT_EMAIL: ${CONTACT_EMAIL}
+      FLOW_API_KEY: ${FLOW_API_KEY}
+      FLOW_SECRET_KEY: ${FLOW_SECRET_KEY}
+      FLOW_SANDBOX: ${FLOW_SANDBOX}
+      RECAPTCHA_SITE_KEY: ${RECAPTCHA_SITE_KEY}
+      RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY}
+    volumes:
+      - wp_core:/var/www/html
+      - ./wp-content/themes/solartechonolgy:/var/www/html/wp-content/themes/solartechonolgy
+      - ./wp-content/mu-plugins:/var/www/html/wp-content/mu-plugins
+      - ./seed:/seed
+    networks:
+      - st_net
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    container_name: st_pma
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      UPLOAD_LIMIT: 64M
+    networks:
+      - st_net
+
+volumes:
+  db_data:
+  wp_core:
+
+networks:
+  st_net:
+    driver: bridge

@@ -1,0 +1,14 @@
+# Secretos — NUNCA subir
+.env
+
+# WordPress core y datos (los maneja Docker por volumen)
+wp-core/
+wp-content/uploads/
+wp-content/upgrade/
+wp-content/cache/
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.log
+*.sql
