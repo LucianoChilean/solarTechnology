@@ -13,10 +13,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function st_recaptcha_site_key() {
-	return getenv( 'RECAPTCHA_SITE_KEY' ) ?: get_option( 'st_recaptcha_site_key', '' );
+	return function_exists( 'st_config' )
+		? st_config( 'RECAPTCHA_SITE_KEY' )
+		: get_option( 'st_recaptcha_site_key', '' );
 }
 function st_recaptcha_secret_key() {
-	return getenv( 'RECAPTCHA_SECRET_KEY' ) ?: get_option( 'st_recaptcha_secret_key', '' );
+	return function_exists( 'st_config' )
+		? st_config( 'RECAPTCHA_SECRET_KEY' )
+		: get_option( 'st_recaptcha_secret_key', '' );
 }
 function st_recaptcha_enabled() {
 	return st_recaptcha_site_key() && st_recaptcha_secret_key();

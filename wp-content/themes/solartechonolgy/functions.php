@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'ST_THEME_VERSION', '1.0.2' );
+define( 'ST_THEME_VERSION', '1.1.2' );
 
 /* -------------------------------------------------------------------------
  *  Soporte del theme
@@ -116,12 +116,17 @@ function st_product_quote_link( $product ) {
  *  Helpers de negocio (opciones guardadas por seed/setup.sh)
  * ---------------------------------------------------------------------- */
 function st_whatsapp_number() {
-	$n = get_option( 'st_whatsapp_number', getenv( 'WHATSAPP_NUMBER' ) ?: '56974089594' );
+	// st_config() lo resuelve desde wp-config.php, el entorno o la opción (mu-plugin 01).
+	$n = function_exists( 'st_config' )
+		? st_config( 'WHATSAPP_NUMBER', '56974089594' )
+		: get_option( 'st_whatsapp_number', '56974089594' );
 	return preg_replace( '/[^0-9]/', '', (string) $n );
 }
 
 function st_contact_email() {
-	return get_option( 'st_contact_email', getenv( 'CONTACT_EMAIL' ) ?: 'Ventas.isisolareingenieria@gmail.com' );
+	return function_exists( 'st_config' )
+		? st_config( 'CONTACT_EMAIL', 'Ventas.isisolareingenieria@gmail.com' )
+		: get_option( 'st_contact_email', 'Ventas.isisolareingenieria@gmail.com' );
 }
 
 function st_wa_link( $text = '' ) {

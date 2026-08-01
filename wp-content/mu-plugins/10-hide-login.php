@@ -16,10 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Devuelve el slug secreto de acceso.
  */
 function st_login_slug() {
-	$slug = getenv( 'LOGIN_SLUG' );
-	if ( ! $slug ) {
-		$slug = get_option( 'st_login_slug', 'acceso-solar' );
-	}
+	$slug = function_exists( 'st_config' )
+		? st_config( 'LOGIN_SLUG', 'acceso-solar' )
+		: get_option( 'st_login_slug', 'acceso-solar' );
 	return sanitize_title( $slug );
 }
 

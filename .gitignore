@@ -1,6 +1,10 @@
 # Secretos — NUNCA subir
 .env
 
+# Paquete de despliegue — contiene la contraseña de la BD y el dump
+dist/
+seed/_deploy.sql
+
 # WordPress core y datos (los maneja Docker por volumen)
 wp-core/
 wp-content/uploads/

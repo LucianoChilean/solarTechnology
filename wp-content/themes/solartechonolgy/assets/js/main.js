@@ -33,8 +33,10 @@
     });
 
     // Si se vuelve a ancho de escritorio, la nav debe quedar en su estado normal.
+    // OJO: 981px tiene que coincidir con el breakpoint de la hamburguesa en
+    // main.css (@media max-width:980px). Si se cambia uno, cambiar el otro.
     if (window.matchMedia) {
-      var wide = window.matchMedia('(min-width: 641px)');
+      var wide = window.matchMedia('(min-width: 981px)');
       var onChange = function (ev) {
         if (ev.matches) setOpen(false);
       };

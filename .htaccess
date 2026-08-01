@@ -10,10 +10,20 @@
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
   Header always set X-XSS-Protection "1; mode=block"
-  # HSTS: descomenta SOLO cuando sirvas bajo HTTPS/TLS
-  # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+  # HSTS: se envía solo cuando la petición llega por HTTPS (en local no aplica).
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" env=HTTPS
   Header unset X-Powered-By
   Header always unset X-Powered-By
+</IfModule>
+
+# --- Forzar HTTPS (producción) --------------------------------------------
+# No actúa en el entorno local de Docker (localhost / 127.0.0.1).
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)(:[0-9]+)?$ [NC]
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [L,R=301]
 </IfModule>
 
 # --- Sin listado de directorios -------------------------------------------

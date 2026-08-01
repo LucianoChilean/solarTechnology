@@ -48,6 +48,11 @@ docker-compose.yml     # mysql:8 + wordpress:php8.3-apache + wpcli + phpmyadmin
 .env                   # credenciales / claves (placeholder) — NO subir a git
 .htaccess              # reglas de seguridad Apache (montado en la raíz de WP)
 uploads.ini            # límites PHP + disable_functions peligrosas
+deploy/                # despliegue a cPanel (ver DEPLOY-CPANEL.md)
+  build.ps1            # arma dist/: zip del sitio + database.sql + instrucciones
+  wp-config-cpanel.php # plantilla de wp-config con las constantes ST_*
+  user.ini             # equivalente de uploads.ini para el hosting (.user.ini)
+  uploads.htaccess     # PHP no se ejecuta en wp-content/uploads/
 seed/
   setup.sh             # provisión con WP-CLI (idempotente)
   products.csv         # 24 productos (fuente)
@@ -81,6 +86,7 @@ repositorio y vuelve a entrar en juego al desactivar el modo catálogo.
 | Archivo | Función |
 |---------|---------|
 | `00-security.php` | XML-RPC off, anti-enumeración, headers, no subir ejecutables |
+| `01-config.php` | `st_config()`: resuelve cada valor desde constante `ST_*` → entorno → opción de la BD |
 | `10-hide-login.php` | Login oculto (`/acceso-solar`), wp-admin/wp-login → 404 |
 | `20-login-throttle.php` | Límite de intentos de login por IP |
 | `30-recaptcha.php` | reCAPTCHA v3 (login, checkout, contacto) |
@@ -120,13 +126,31 @@ Solo aplican si se desactiva el modo catálogo.
 2. **reCAPTCHA**: pon tus claves reales en `.env` (`RECAPTCHA_SITE_KEY`, `RECAPTCHA_SECRET_KEY`).
    Con placeholders la validación queda desactivada para no bloquearte.
 3. **Contraseñas**: cambia todas las de `.env` (DB y admin).
-4. **HTTPS**: al servir con TLS, descomenta `FORCE_SSL_ADMIN` (compose) y `HSTS` (.htaccess).
+4. **HTTPS**: ya está resuelto para producción — el `.htaccess` fuerza HTTPS (salvo en
+   `localhost`) y envía HSTS solo cuando la petición llega por TLS; `FORCE_SSL_ADMIN` va
+   en el `wp-config.php` que genera el despliegue.
 5. Opcional máxima dureza tras el setup: activar `DISALLOW_FILE_MODS` (bloquea instalar/actualizar
    plugins desde el panel).
 6. Solo si reactivas la tienda — **Flow**: registra tu comercio en https://sandbox.flow.cl
    (pruebas) o https://www.flow.cl (producción) y pon `FLOW_API_KEY` / `FLOW_SECRET_KEY`
    en `.env`. Para producción, `FLOW_SANDBOX=no`. Sin claves, el checkout avisa que
    falta configuración.
+
+## Despliegue a producción (hosting con cPanel)
+Con Docker en marcha, un solo comando arma el paquete:
+
+```powershell
+.\deploy\build.ps1 -Domain tudominio.cl -DbName usuario_solartech -DbUser usuario_st_user
+```
+
+Deja en `dist/` el zip del sitio, `database.sql` y un `LEEME-SUBIR.txt` con los pasos
+ya rellenados. Hace el `search-replace` de la URL y **restaura el local** al terminar,
+genera claves de seguridad nuevas y escribe el `wp-config.php` con las constantes
+`ST_*` (en cPanel no hay variables de entorno).
+
+Guía completa, alternativas manuales y checklist final: **[DEPLOY-CPANEL.md](DEPLOY-CPANEL.md)**.
+
+> `dist/` lleva la contraseña de la BD en texto plano — está en `.gitignore`, no lo compartas.
 
 ## Apagar / reiniciar
 ```sh

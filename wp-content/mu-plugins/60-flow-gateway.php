@@ -122,25 +122,25 @@ function st_flow_init_gateway() {
 					'title'   => 'Modo sandbox',
 					'type'    => 'checkbox',
 					'label'   => 'Usar entorno de pruebas (sandbox.flow.cl)',
-					'default' => ( getenv( 'FLOW_SANDBOX' ) === 'no' ) ? 'no' : 'yes',
+					'default' => ( 'no' === st_config( 'FLOW_SANDBOX' ) ) ? 'no' : 'yes',
 				),
 				'api_key'     => array(
 					'title'       => 'Flow API Key',
 					'type'        => 'text',
-					'default'     => (string) getenv( 'FLOW_API_KEY' ),
-					'description' => 'Se toma de .env (FLOW_API_KEY) si está vacío aquí.',
+					'default'     => st_config( 'FLOW_API_KEY' ),
+					'description' => 'Si se deja vacío se toma de ST_FLOW_API_KEY (wp-config.php) o de .env.',
 				),
 				'secret_key'  => array(
 					'title'   => 'Flow Secret Key',
 					'type'    => 'password',
-					'default' => (string) getenv( 'FLOW_SECRET_KEY' ),
+					'default' => st_config( 'FLOW_SECRET_KEY' ),
 				),
 			);
 		}
 
 		protected function creds() {
-			$api    = $this->get_option( 'api_key' ) ?: getenv( 'FLOW_API_KEY' );
-			$secret = $this->get_option( 'secret_key' ) ?: getenv( 'FLOW_SECRET_KEY' );
+			$api    = $this->get_option( 'api_key' ) ?: st_config( 'FLOW_API_KEY' );
+			$secret = $this->get_option( 'secret_key' ) ?: st_config( 'FLOW_SECRET_KEY' );
 			$sbox   = 'yes' === $this->get_option( 'sandbox', 'yes' );
 			return array( $api, $secret, $sbox );
 		}

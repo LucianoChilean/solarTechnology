@@ -1,0 +1,12 @@
+# ==========================================================================
+# SolarTechonolgy — se copia como wp-content/uploads/.htaccess al armar el
+# paquete de despliegue (deploy/build.ps1). Defensa en profundidad: aunque
+# alguien logre escribir un .php dentro de uploads, Apache no lo ejecuta.
+# ==========================================================================
+
+<FilesMatch "\.(php|phtml|php3|php4|php5|php7|php8|pht|phar|cgi|pl|py|sh)$">
+  Require all denied
+</FilesMatch>
+
+# Sin listado de directorios.
+Options -Indexes
